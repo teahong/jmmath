@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #13213c;
+  background: #fff7d6;
+  font-family: Nunito, Pretendard, ui-rounded, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+button,
+canvas {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.celebration-card {
+  animation: celebration-bounce 520ms cubic-bezier(0.2, 1.4, 0.35, 1);
+}
+
+.confetti-piece {
+  animation: confetti-fall 900ms ease-out forwards;
+}
+
+.success-ring {
+  animation: success-ring 700ms ease-out forwards;
+}
+
+.sparkle-pop {
+  animation: sparkle-pop 760ms ease-out forwards;
+}
+
+@keyframes celebration-bounce {
+  0% {
+    transform: scale(0.94);
+  }
+  55% {
+    transform: scale(1.035);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(210px) rotate(260deg);
+  }
+}
+
+@keyframes success-ring {
+  0% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(0.35);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(3.2);
+  }
+}
+
+@keyframes sparkle-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.25) rotate(-20deg);
+  }
+  45% {
+    opacity: 1;
+    transform: scale(1.2) rotate(12deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) rotate(24deg);
+  }
+}

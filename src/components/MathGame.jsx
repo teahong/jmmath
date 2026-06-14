@@ -173,18 +173,9 @@ function MathGame({ onSaved }) {
         </div>
       </section>
 
-      <aside className="flex flex-col gap-4 lg:gap-3">
+      <aside className="flex flex-col gap-5 lg:gap-4">
         <button
-          className="flex min-h-16 items-center justify-center gap-3 rounded-[1.75rem] border-4 border-slate-900 bg-[#ffb703] px-5 py-4 text-2xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md lg:min-h-14 lg:rounded-[1.5rem] lg:py-3 lg:text-xl"
-          type="button"
-          onClick={startRound}
-        >
-          <Timer size={30} />
-          {roundActive ? '다시 시작' : '타이머 시작'}
-        </button>
-
-        <button
-          className="flex min-h-16 items-center justify-center gap-3 rounded-[1.75rem] border-4 border-slate-900 bg-[#06d6a0] px-5 py-4 text-2xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md disabled:cursor-not-allowed disabled:bg-slate-300 lg:min-h-14 lg:rounded-[1.5rem] lg:py-3 lg:text-xl"
+          className="flex min-h-24 items-center justify-center gap-3 rounded-[2rem] border-4 border-slate-900 bg-[#06d6a0] px-5 py-5 text-3xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md disabled:cursor-not-allowed disabled:bg-slate-300 lg:min-h-24 lg:rounded-[1.75rem] lg:py-4 lg:text-2xl"
           type="button"
           disabled={!recognizer || checking || !roundActive || (result && !result.error)}
           onClick={checkAnswer}
@@ -193,14 +184,25 @@ function MathGame({ onSaved }) {
           채점하기
         </button>
 
-        <button
-          className="flex min-h-14 items-center justify-center gap-3 rounded-[1.5rem] bg-[#219ebc] px-5 py-3 text-xl font-black text-white shadow-md transition active:scale-95 lg:min-h-12 lg:py-2 lg:text-lg"
-          type="button"
-          onClick={nextProblem}
-        >
-          <Play size={26} fill="currentColor" />
-          다음 문제
-        </button>
+        <div className="grid grid-cols-2 gap-3 rounded-[1.75rem] bg-white/70 p-2 shadow-md">
+          <button
+            className="flex min-h-14 items-center justify-center gap-2 rounded-[1.25rem] border-[3px] border-slate-900 bg-[#ffb703] px-3 py-3 text-lg font-black text-slate-950 transition active:scale-95"
+            type="button"
+            onClick={startRound}
+          >
+            <Timer size={23} />
+            {roundActive ? '다시' : '시작'}
+          </button>
+
+          <button
+            className="flex min-h-14 items-center justify-center gap-2 rounded-[1.25rem] bg-[#219ebc] px-3 py-3 text-lg font-black text-white shadow-md transition active:scale-95"
+            type="button"
+            onClick={nextProblem}
+          >
+            <Play size={23} fill="currentColor" />
+            다음
+          </button>
+        </div>
 
         {result && (
           <div

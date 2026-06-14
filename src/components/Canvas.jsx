@@ -69,13 +69,13 @@ const Canvas = forwardRef(function Canvas({ disabled = false }, ref) {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="rounded-[2rem] border-4 border-slate-900 bg-white p-3 shadow-pop">
+    <div className="mx-auto flex w-full max-w-[320px] flex-col gap-4 lg:max-w-[280px] lg:gap-3 xl:max-w-[300px]">
+      <div className="rounded-[2rem] border-4 border-slate-900 bg-white p-3 shadow-pop lg:rounded-[1.5rem] lg:p-2">
         <canvas
           ref={canvasRef}
           width={CANVAS_SIZE}
           height={CANVAS_SIZE}
-          className="aspect-square w-full cursor-crosshair rounded-[1.5rem] bg-white touch-none"
+          className="aspect-square w-full cursor-crosshair rounded-[1.5rem] bg-white touch-none lg:rounded-[1rem]"
           aria-label="숫자 손글씨 입력 칸"
           onPointerDown={startDrawing}
           onPointerMove={draw}
@@ -85,7 +85,7 @@ const Canvas = forwardRef(function Canvas({ disabled = false }, ref) {
         />
       </div>
 
-      <div className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[1.5rem] bg-white p-3 shadow-md">
+      <div className="grid grid-cols-[1fr_auto] items-center gap-3 rounded-[1.5rem] bg-white p-3 shadow-md lg:p-2">
         <label className="flex items-center gap-3 text-sm font-black text-slate-600">
           <Eraser size={20} />
           굵기
@@ -99,7 +99,7 @@ const Canvas = forwardRef(function Canvas({ disabled = false }, ref) {
           />
         </label>
         <button
-          className="grid h-12 w-12 place-items-center rounded-2xl bg-[#ff006e] text-white shadow-md transition active:scale-95"
+          className="grid h-12 w-12 place-items-center rounded-2xl bg-[#ff006e] text-white shadow-md transition active:scale-95 lg:h-10 lg:w-10"
           type="button"
           onClick={clear}
           aria-label="지우기"

@@ -106,23 +106,23 @@ function MathGame({ onSaved }) {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_380px]">
-      <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-pop">
-        <div className="mb-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-start">
+    <div className="grid gap-6 lg:grid-cols-[1fr_280px] lg:gap-4 xl:grid-cols-[1fr_300px]">
+      <section className="rounded-[2rem] border-4 border-slate-900 bg-white p-5 shadow-pop lg:rounded-[1.75rem] lg:p-4">
+        <div className="mb-5 grid gap-4 lg:mb-3 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-3">
           <div>
             <p className="text-sm font-black text-[#fb5607]">{currentLevel.label}</p>
-            <h1 className="text-3xl font-black sm:text-5xl">빈칸의 답을 써요</h1>
+            <h1 className="text-3xl font-black sm:text-5xl lg:text-4xl">빈칸의 답을 써요</h1>
             <p className="mt-1 text-sm font-extrabold text-slate-500">{currentLevel.description}</p>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <div className="flex min-w-[220px] items-center gap-3 rounded-[1.5rem] border-4 border-slate-900 bg-[#ffb703] px-4 py-3 shadow-md">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white">
-                <Timer className="text-[#fb5607]" size={26} />
+          <div className="flex flex-col gap-3 lg:gap-2">
+            <div className="flex min-w-[220px] items-center gap-3 rounded-[1.5rem] border-4 border-slate-900 bg-[#ffb703] px-4 py-3 shadow-md lg:min-w-[200px] lg:px-3 lg:py-2">
+              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-white lg:h-9 lg:w-9">
+                <Timer className="text-[#fb5607]" size={24} />
               </span>
               <div>
                 <p className="text-xs font-black text-slate-700">라운드 시간</p>
-                <p className="text-2xl font-black">{roundActive ? formatDuration(elapsedMs) : '대기 중'}</p>
+                <p className="text-2xl font-black lg:text-xl">{roundActive ? formatDuration(elapsedMs) : '대기 중'}</p>
               </div>
             </div>
 
@@ -130,7 +130,7 @@ function MathGame({ onSaved }) {
               {levels.map((item) => (
                 <button
                   key={item.id}
-                  className={`rounded-2xl border-[3px] border-slate-900 px-2 py-3 text-sm font-black transition active:scale-95 sm:text-base ${
+                  className={`rounded-2xl border-[3px] border-slate-900 px-2 py-3 text-sm font-black transition active:scale-95 sm:text-base lg:rounded-xl lg:px-1.5 lg:py-2 lg:text-sm ${
                     level === item.id ? 'bg-[#ffb703] text-slate-950 shadow-md' : 'bg-slate-100'
                   }`}
                   type="button"
@@ -143,9 +143,9 @@ function MathGame({ onSaved }) {
           </div>
         </div>
 
-        <div className="grid gap-5 xl:grid-cols-[1fr_320px] xl:items-start">
-          <div className="flex min-h-[320px] flex-col justify-center rounded-[2rem] bg-[#8ecae6] p-5 text-center shadow-inner">
-            <div className="mx-auto flex w-full max-w-xl items-center justify-center gap-4 rounded-[2rem] bg-white px-4 py-8 text-5xl font-black shadow-soft sm:text-7xl">
+        <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-4 xl:grid-cols-[1fr_300px]">
+          <div className="flex min-h-[320px] flex-col justify-center rounded-[2rem] bg-[#8ecae6] p-5 text-center shadow-inner lg:min-h-[270px] lg:rounded-[1.5rem] lg:p-4">
+            <div className="mx-auto flex w-full max-w-xl items-center justify-center gap-4 rounded-[2rem] bg-white px-4 py-8 text-5xl font-black shadow-soft sm:text-7xl lg:gap-3 lg:rounded-[1.5rem] lg:py-5 lg:text-6xl">
               <span>{problem.left}</span>
               <span className="text-[#fb5607]">{problem.operator}</span>
               <span>{problem.right}</span>
@@ -153,18 +153,18 @@ function MathGame({ onSaved }) {
               <span className="text-[#ff006e]">?</span>
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-              <div className="rounded-2xl bg-white px-3 py-4">
+            <div className="mt-5 grid grid-cols-3 gap-3 text-center lg:mt-4 lg:gap-2">
+              <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
                 <p className="text-xs font-black text-slate-500">이번 라운드</p>
-                <p className="text-2xl font-black">{round.total}/{ROUND_SIZE}</p>
+                <p className="text-2xl font-black lg:text-xl">{round.total}/{ROUND_SIZE}</p>
               </div>
-              <div className="rounded-2xl bg-white px-3 py-4">
+              <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
                 <p className="text-xs font-black text-slate-500">맞은 개수</p>
-                <p className="text-2xl font-black">{round.correct}</p>
+                <p className="text-2xl font-black lg:text-xl">{round.correct}</p>
               </div>
-              <div className="rounded-2xl bg-white px-3 py-4">
+              <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
                 <p className="text-xs font-black text-slate-500">점수</p>
-                <p className="text-2xl font-black">{round.score}</p>
+                <p className="text-2xl font-black lg:text-xl">{round.score}</p>
               </div>
             </div>
           </div>
@@ -173,9 +173,9 @@ function MathGame({ onSaved }) {
         </div>
       </section>
 
-      <aside className="flex flex-col gap-4">
+      <aside className="flex flex-col gap-4 lg:gap-3">
         <button
-          className="flex min-h-16 items-center justify-center gap-3 rounded-[1.75rem] border-4 border-slate-900 bg-[#ffb703] px-5 py-4 text-2xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md"
+          className="flex min-h-16 items-center justify-center gap-3 rounded-[1.75rem] border-4 border-slate-900 bg-[#ffb703] px-5 py-4 text-2xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md lg:min-h-14 lg:rounded-[1.5rem] lg:py-3 lg:text-xl"
           type="button"
           onClick={startRound}
         >
@@ -184,7 +184,7 @@ function MathGame({ onSaved }) {
         </button>
 
         <button
-          className="flex min-h-16 items-center justify-center gap-3 rounded-[1.75rem] border-4 border-slate-900 bg-[#06d6a0] px-5 py-4 text-2xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md disabled:cursor-not-allowed disabled:bg-slate-300"
+          className="flex min-h-16 items-center justify-center gap-3 rounded-[1.75rem] border-4 border-slate-900 bg-[#06d6a0] px-5 py-4 text-2xl font-black text-slate-950 shadow-pop transition active:translate-y-1 active:shadow-md disabled:cursor-not-allowed disabled:bg-slate-300 lg:min-h-14 lg:rounded-[1.5rem] lg:py-3 lg:text-xl"
           type="button"
           disabled={!recognizer || checking || !roundActive || (result && !result.error)}
           onClick={checkAnswer}
@@ -194,7 +194,7 @@ function MathGame({ onSaved }) {
         </button>
 
         <button
-          className="flex min-h-14 items-center justify-center gap-3 rounded-[1.5rem] bg-[#219ebc] px-5 py-3 text-xl font-black text-white shadow-md transition active:scale-95"
+          className="flex min-h-14 items-center justify-center gap-3 rounded-[1.5rem] bg-[#219ebc] px-5 py-3 text-xl font-black text-white shadow-md transition active:scale-95 lg:min-h-12 lg:py-2 lg:text-lg"
           type="button"
           onClick={nextProblem}
         >
@@ -204,22 +204,22 @@ function MathGame({ onSaved }) {
 
         {result && (
           <div
-            className={`rounded-[2rem] border-4 border-slate-900 p-5 shadow-pop ${
+            className={`rounded-[2rem] border-4 border-slate-900 p-5 shadow-pop lg:rounded-[1.5rem] lg:p-4 ${
               result.isCorrect ? 'celebration-card relative overflow-hidden bg-[#06d6a0]' : 'bg-[#ff006e] text-white'
             }`}
           >
             {result.isCorrect && <CelebrationBurst />}
             <div className="flex items-center gap-3">
               {result.isCorrect ? <PartyPopper size={38} /> : <XCircle size={38} />}
-              <p className="text-3xl font-black">{result.isCorrect ? '정답!' : '다시 도전!'}</p>
+              <p className="text-3xl font-black lg:text-2xl">{result.isCorrect ? '정답!' : '다시 도전!'}</p>
             </div>
-            <p className="mt-3 text-lg font-black">
+            <p className="mt-2 text-lg font-black lg:text-sm">
               AI가 본 숫자: {result.text} · 정답: {result.answer}
             </p>
             {result.error ? (
-              <p className="text-sm font-extrabold opacity-90">{result.error}</p>
+              <p className="line-clamp-3 text-sm font-extrabold opacity-90 lg:text-xs">{result.error}</p>
             ) : (
-              <p className="text-sm font-extrabold opacity-80">Google Vision OCR</p>
+              <p className="text-sm font-extrabold opacity-80 lg:text-xs">Google Vision OCR</p>
             )}
           </div>
         )}

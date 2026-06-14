@@ -12,18 +12,18 @@ function App() {
 
   return (
     <main className="min-h-screen bg-[#fff7d6] text-slate-900">
-      <div className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-4 py-4 sm:px-6 lg:px-8">
-        <header className="flex flex-col gap-4 rounded-[2rem] border-4 border-slate-900 bg-white p-4 shadow-pop sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-3 py-3 sm:px-5 lg:px-5 lg:py-3">
+        <header className="flex flex-col gap-3 rounded-[1.5rem] border-4 border-slate-900 bg-white p-3 shadow-pop sm:flex-row sm:items-center sm:justify-between lg:rounded-[1.75rem] lg:py-2">
           <button
             className="flex items-center gap-3 text-left"
             type="button"
             onClick={() => setView('game')}
           >
-            <span className="grid h-14 w-14 place-items-center rounded-3xl bg-[#ffb703] text-slate-950">
-              <Calculator size={34} strokeWidth={3} />
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#ffb703] text-slate-950 lg:h-11 lg:w-11">
+              <Calculator size={30} strokeWidth={3} />
             </span>
             <span>
-              <span className="block text-3xl font-black tracking-normal sm:text-4xl">재몬수학</span>
+              <span className="block text-3xl font-black tracking-normal sm:text-4xl lg:text-3xl">재몬수학</span>
               <span className="flex items-center gap-1 text-sm font-extrabold text-slate-500">
                 <Sparkles size={16} />
                 손으로 쓰고 바로 채점해요
@@ -31,9 +31,9 @@ function App() {
             </span>
           </button>
 
-          <nav className="grid grid-cols-2 gap-2 rounded-3xl bg-slate-100 p-2">
+          <nav className="grid grid-cols-2 gap-2 rounded-3xl bg-slate-100 p-2 lg:p-1.5">
             <button
-              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-lg font-black transition ${
+              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-lg font-black transition lg:py-2 lg:text-base ${
                 view === 'game' ? 'bg-[#219ebc] text-white shadow-md' : 'text-slate-700'
               }`}
               type="button"
@@ -43,7 +43,7 @@ function App() {
               문제
             </button>
             <button
-              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-lg font-black transition ${
+              className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-lg font-black transition lg:py-2 lg:text-base ${
                 view === 'dashboard' ? 'bg-[#fb5607] text-white shadow-md' : 'text-slate-700'
               }`}
               type="button"
@@ -55,7 +55,7 @@ function App() {
           </nav>
         </header>
 
-        <section className="flex-1 py-6">
+        <section className="flex-1 py-4 lg:py-3">
           {view === 'game' ? (
             <MathGame onSaved={refreshRecords} />
           ) : (

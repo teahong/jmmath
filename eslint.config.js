@@ -19,6 +19,7 @@ export default [
         navigator: 'readonly',
         caches: 'readonly',
         fetch: 'readonly',
+        Audio: 'readonly',
         self: 'readonly',
         window: 'readonly'
       },

@@ -1,7 +1,7 @@
 import { CheckCircle2, Loader2, PartyPopper, Play, Timer, XCircle } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import Canvas from './Canvas.jsx'
-import { playSuccessSound } from '../utils/celebration.js'
+import { playSuccessSound, prepareSuccessSound } from '../utils/celebration.js'
 import { createProblem, levels } from '../utils/math.js'
 import { saveRecord } from '../utils/storage.js'
 import { formatDuration } from '../utils/time.js'
@@ -20,18 +20,31 @@ function MathGame({ onSaved }) {
   const [roundActive, setRoundActive] = useState(false)
   const [roundStartedAt, setRoundStartedAt] = useState(null)
   const [elapsedMs, setElapsedMs] = useState(0)
+  const [lastRoundSummary, setLastRoundSummary] = useState(null)
+  const autoNextTimerRef = useRef(null)
 
   const currentLevel = useMemo(() => levels.find((item) => item.id === level), [level])
 
+  const clearAutoNextTimer = () => {
+    if (autoNextTimerRef.current) {
+      window.clearTimeout(autoNextTimerRef.current)
+      autoNextTimerRef.current = null
+    }
+  }
+
   useEffect(() => {
+    clearAutoNextTimer()
     setProblem(createProblem(level))
     setResult(null)
     setRound({ total: 0, correct: 0, score: 0 })
     setRoundActive(false)
     setRoundStartedAt(null)
     setElapsedMs(0)
+    setLastRoundSummary(null)
     canvasRef.current?.clear()
   }, [level])
+
+  useEffect(() => clearAutoNextTimer, [])
 
   useEffect(() => {
     if (!roundActive || !roundStartedAt) return undefined
@@ -44,8 +57,11 @@ function MathGame({ onSaved }) {
   }, [roundActive, roundStartedAt])
 
   const startRound = () => {
+    clearAutoNextTimer()
+    prepareSuccessSound()
     setRound({ total: 0, correct: 0, score: 0 })
     setResult(null)
+    setLastRoundSummary(null)
     setProblem(createProblem(level))
     setRoundStartedAt(Date.now())
     setElapsedMs(0)
@@ -54,6 +70,7 @@ function MathGame({ onSaved }) {
   }
 
   const nextProblem = () => {
+    clearAutoNextTimer()
     setProblem(createProblem(level))
     setResult(null)
     canvasRef.current?.clear()
@@ -61,6 +78,7 @@ function MathGame({ onSaved }) {
 
   const checkAnswer = async () => {
     if (!recognizer || checking || !roundActive || (result && !result.error)) return
+    prepareSuccessSound()
     setChecking(true)
     try {
       const prediction = await recognizeAnswer(recognizer, canvasRef.current.getCanvas())
@@ -78,18 +96,26 @@ function MathGame({ onSaved }) {
 
       if (nextRound.total >= ROUND_SIZE) {
         const durationMs = Date.now() - roundStartedAt
-        saveRecord({
+        const summary = {
           level,
           total: nextRound.total,
           correct: nextRound.correct,
           score: nextRound.score,
           durationMs
+        }
+        saveRecord({
+          ...summary
         })
         onSaved()
+        setLastRoundSummary(summary)
         setElapsedMs(durationMs)
         setRoundActive(false)
         setRoundStartedAt(null)
         setRound({ total: 0, correct: 0, score: 0 })
+      } else if (isCorrect) {
+        autoNextTimerRef.current = window.setTimeout(() => {
+          nextProblem()
+        }, 950)
       }
     } catch (error) {
       setResult({
@@ -143,34 +169,42 @@ function MathGame({ onSaved }) {
           </div>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-4 xl:grid-cols-[1fr_300px]">
-          <div className="flex min-h-[320px] flex-col justify-center rounded-[2rem] bg-[#8ecae6] p-5 text-center shadow-inner lg:min-h-[270px] lg:rounded-[1.5rem] lg:p-4">
-            <div className="mx-auto flex w-full max-w-xl items-center justify-center gap-4 rounded-[2rem] bg-white px-4 py-8 text-5xl font-black shadow-soft sm:text-7xl lg:gap-3 lg:rounded-[1.5rem] lg:py-5 lg:text-6xl">
-              <span>{problem.left}</span>
-              <span className="text-[#fb5607]">{problem.operator}</span>
-              <span>{problem.right}</span>
-              <span>=</span>
-              <span className="text-[#ff006e]">?</span>
+        {roundActive ? (
+          <div className="grid gap-5 lg:grid-cols-[1fr_280px] lg:items-start lg:gap-4 xl:grid-cols-[1fr_300px]">
+            <div className="flex min-h-[320px] flex-col justify-center rounded-[2rem] bg-[#8ecae6] p-5 text-center shadow-inner lg:min-h-[270px] lg:rounded-[1.5rem] lg:p-4">
+              <div className="mx-auto flex w-full max-w-xl items-center justify-center gap-4 rounded-[2rem] bg-white px-4 py-8 text-5xl font-black shadow-soft sm:text-7xl lg:gap-3 lg:rounded-[1.5rem] lg:py-5 lg:text-6xl">
+                <span>{problem.left}</span>
+                <span className="text-[#fb5607]">{problem.operator}</span>
+                <span>{problem.right}</span>
+                <span>=</span>
+                <span className="text-[#ff006e]">?</span>
+              </div>
+
+              <div className="mt-5 grid grid-cols-3 gap-3 text-center lg:mt-4 lg:gap-2">
+                <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
+                  <p className="text-xs font-black text-slate-500">이번 라운드</p>
+                  <p className="text-2xl font-black lg:text-xl">{round.total}/{ROUND_SIZE}</p>
+                </div>
+                <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
+                  <p className="text-xs font-black text-slate-500">맞은 개수</p>
+                  <p className="text-2xl font-black lg:text-xl">{round.correct}</p>
+                </div>
+                <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
+                  <p className="text-xs font-black text-slate-500">점수</p>
+                  <p className="text-2xl font-black lg:text-xl">{round.score}</p>
+                </div>
+              </div>
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-3 text-center lg:mt-4 lg:gap-2">
-              <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
-                <p className="text-xs font-black text-slate-500">이번 라운드</p>
-                <p className="text-2xl font-black lg:text-xl">{round.total}/{ROUND_SIZE}</p>
-              </div>
-              <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
-                <p className="text-xs font-black text-slate-500">맞은 개수</p>
-                <p className="text-2xl font-black lg:text-xl">{round.correct}</p>
-              </div>
-              <div className="rounded-2xl bg-white px-3 py-4 lg:px-2 lg:py-3">
-                <p className="text-xs font-black text-slate-500">점수</p>
-                <p className="text-2xl font-black lg:text-xl">{round.score}</p>
-              </div>
-            </div>
+            <Canvas ref={canvasRef} disabled={checking} />
           </div>
-
-          <Canvas ref={canvasRef} disabled={checking} />
-        </div>
+        ) : (
+          <RoundGate
+            currentLevel={currentLevel}
+            lastRoundSummary={lastRoundSummary}
+            onStart={startRound}
+          />
+        )}
       </section>
 
       <aside className="flex flex-col gap-5 lg:gap-4">
@@ -195,8 +229,9 @@ function MathGame({ onSaved }) {
           </button>
 
           <button
-            className="flex min-h-14 items-center justify-center gap-2 rounded-[1.25rem] bg-[#219ebc] px-3 py-3 text-lg font-black text-white shadow-md transition active:scale-95"
+            className="flex min-h-14 items-center justify-center gap-2 rounded-[1.25rem] bg-[#219ebc] px-3 py-3 text-lg font-black text-white shadow-md transition active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
             type="button"
+            disabled={!roundActive}
             onClick={nextProblem}
           >
             <Play size={23} fill="currentColor" />
@@ -204,7 +239,7 @@ function MathGame({ onSaved }) {
           </button>
         </div>
 
-        {result && (
+        {roundActive && result && (
           <div
             className={`rounded-[2rem] border-4 border-slate-900 p-5 shadow-pop lg:rounded-[1.5rem] lg:p-4 ${
               result.isCorrect ? 'celebration-card relative overflow-hidden bg-[#06d6a0]' : 'bg-[#ff006e] text-white'
@@ -226,6 +261,54 @@ function MathGame({ onSaved }) {
           </div>
         )}
       </aside>
+    </div>
+  )
+}
+
+function RoundGate({ currentLevel, lastRoundSummary, onStart }) {
+  const completed = Boolean(lastRoundSummary)
+
+  return (
+    <div className="grid min-h-[430px] place-items-center rounded-[2rem] bg-[#8ecae6] p-6 text-center shadow-inner lg:min-h-[420px] lg:rounded-[1.5rem]">
+      <div className="w-full max-w-2xl rounded-[2rem] border-4 border-slate-900 bg-white px-6 py-8 shadow-soft lg:py-6">
+        <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-3xl bg-[#ffb703]">
+          {completed ? <PartyPopper size={36} /> : <Timer size={36} />}
+        </div>
+        <p className="text-sm font-black text-[#fb5607]">{currentLevel.short} · {currentLevel.description}</p>
+        <h2 className="mt-2 text-4xl font-black lg:text-3xl">
+          {completed ? '라운드 완료!' : '라운드를 시작해요'}
+        </h2>
+
+        {completed ? (
+          <div className="mt-5 grid grid-cols-3 gap-3">
+            <SummaryStat label="정답" value={`${lastRoundSummary.correct}/${lastRoundSummary.total}`} />
+            <SummaryStat label="점수" value={`${lastRoundSummary.score}점`} />
+            <SummaryStat label="시간" value={formatDuration(lastRoundSummary.durationMs)} />
+          </div>
+        ) : (
+          <p className="mx-auto mt-4 max-w-md text-lg font-extrabold text-slate-500">
+            시작 버튼을 누르면 10문제 라운드 시간이 기록돼요.
+          </p>
+        )}
+
+        <button
+          className="mt-6 inline-flex min-h-14 items-center justify-center gap-2 rounded-[1.5rem] border-4 border-slate-900 bg-[#06d6a0] px-8 py-3 text-2xl font-black text-slate-950 shadow-md transition active:scale-95"
+          type="button"
+          onClick={onStart}
+        >
+          <Play size={26} fill="currentColor" />
+          {completed ? '새 라운드' : '시작'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function SummaryStat({ label, value }) {
+  return (
+    <div className="rounded-2xl bg-slate-100 px-3 py-4">
+      <p className="text-xs font-black text-slate-500">{label}</p>
+      <p className="text-2xl font-black lg:text-xl">{value}</p>
     </div>
   )
 }
